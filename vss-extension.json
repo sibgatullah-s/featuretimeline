@@ -1,10 +1,10 @@
 {
     "manifestVersion": 1,
-    "id": "workitem-feature-timeline-extension",
+    "id": "Sib",
     "version": "0.0.357",
     "name": "Feature timeline and Epic Roadmap",
     "description": "Feature timeline of your in-progress features.",
-    "publisher": "ms-devlabs",
+    "publisher": "Sib",
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services.Cloud"
