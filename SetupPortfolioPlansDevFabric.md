@@ -26,8 +26,8 @@ npm run package:dev
 ```
 npm run dev
 ```
-8. Create a new publisher called **ms-devlabs** in your devfabric deployment.
-9. Upload `.vsix` package as a new extension for **ms-devlabs** publisher.
+8. Create a new publisher called **Sib** in your devfabric deployment.
+9. Upload `.vsix` package as a new extension for **Sib** publisher.
 10. Share the newly-uploaded extension with your devfabric organization.
 11. Go to your devfabric organization's shared extensions, and install it.
 12. `Portfolio Plans` hub should appear in the `Boards` hub group.

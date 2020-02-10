@@ -1,7 +1,7 @@
 {
   "name": "feature-timeline",
   "version": "1.0.0",
-  "author": "ms-devlabs",
+  "author": "Sib",
   "sideEffects": false,
   "license": "MIT",
   "description": "A Work Item view.",

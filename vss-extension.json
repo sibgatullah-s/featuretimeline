@@ -1,6 +1,6 @@
 {
     "manifestVersion": 1,
-    "id": "Sib",
+    "id": "workitem-feature-timeline-extension",
     "version": "0.0.357",
     "name": "Feature timeline and Epic Roadmap",
     "description": "Feature timeline of your in-progress features.",
@@ -34,7 +34,7 @@
             "addressable": true
         }
     ],
-    "categories": ["Plan and track"],
+    "categories": ["Azure Boards"],
     "contributions": [
         {
             "id": "workitem-feature-timeline",
