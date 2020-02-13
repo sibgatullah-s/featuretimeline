@@ -227,6 +227,11 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
 
             return (
                 <div className="plan-timeline-container">
+              
+                     {/* {console.log(this.props.items.sort((a, b) => a.order - b.order))} */}
+
+                     {/* {this.props.items = this.props.items.sort((a, b) => a.order - b.order)} */}
+
                     <Timeline
                         groups={this.props.groups}
                         items={this.props.items}
@@ -235,7 +240,8 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
                         visibleTimeStart={this.state.visibleTimeStart}
                         visibleTimeEnd={this.state.visibleTimeEnd}
                         onTimeChange={this._handleTimeChange}
-                        canChangeGroup={false}
+                        canChangeGroup={true}
+                        //canMove={true}
                         stackItems={true}
                         dragSnap={day}
                         minZoom={week}
@@ -443,6 +449,22 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
                                                 itemIdToRemove: item.id,
                                                 planId: this.props.planId
                                             })
+                                    },
+                                    {
+                                        id: "moveup",
+                                        text: "Move Up",
+                                        iconProps: {
+                                            iconName: ""
+                                        },
+                                        onActivate: () => this.moveUp(item)
+                                    },
+                                    {
+                                        id: "movedown",
+                                        text: "Move Down",
+                                        iconProps: {
+                                            iconName: ""
+                                        },
+                                        onActivate: () => this.moveDown(item)
                                     }
                                 ]
                             }
@@ -499,6 +521,9 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
 
     private _onItemMove = (itemId: number, time: number): void => {
         this.props.onShiftItem(itemId, moment(time));
+        const item = this.props.items.find(item => item.id === itemId);
+        console.log("Item Id: "  + itemId + ". Order: " + item.custom_order);
+        this.props.items.sort((a, b) => a.custom_order - b.custom_order)
     };
 
     private _getDefaultTimes(items: ITimelineItem[]): [moment.Moment, moment.Moment] {
@@ -531,6 +556,31 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
         this.setState({ visibleTimeStart: startTime, visibleTimeEnd: endTime });
 
         return [startTime, endTime];
+    }
+
+    // swap item order with element above
+    private moveUp(item1: ITimelineItem) {
+        var item2 = this.props.items.find(item => item.custom_order === item1.custom_order - 1);
+        item2.custom_order += 1;
+
+        item1.custom_order -= 1;
+
+        console.log("Title1:", item1.title, "Order1:", item1.custom_order);
+        console.log("Title2:", item2.title, "Order2:", item2.custom_order);
+
+        console.log("Item1:", item1);
+        console.log("Item2:", item2);
+
+        this.props.onOrderItem(item1.id, item1.custom_order);
+        this.props.onOrderItem(item2.id, item2.custom_order);
+
+    }
+
+    // swap item order with element below
+    private moveDown(item1: ITimelineItem) {
+        this.props.items.find(item => item.custom_order === item1.custom_order + 1).custom_order -= 1;
+
+        item1.custom_order += 1;
     }
 
     private navigateToEpicRoadmap(item: ITimelineItem) {
@@ -578,6 +628,7 @@ function mapStateToProps(state: IPortfolioPlanningState): IPlanTimelineMappedPro
 const Actions = {
     onUpdateDates: EpicTimelineActions.updateDates,
     onShiftItem: EpicTimelineActions.shiftItem,
+    onOrderItem: EpicTimelineActions.orderItem,
     onToggleSetDatesDialogHidden: EpicTimelineActions.toggleItemDetailsDialogHidden,
     onSetSelectedItemId: EpicTimelineActions.setSelectedItemId,
     onZeroDataCtaClicked: EpicTimelineActions.openAddItemPanel,
