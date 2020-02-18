@@ -34,6 +34,10 @@ export interface PortfolioPlanningQueryResultItem {
 
     EffortProgress: number;
     CountProgress: number;
+
+    Custom_Order: number;
+    Remaining_Work: number;
+    Completed_Work: number;
 }
 
 export interface PortfolioPlanningProjectQueryInput {

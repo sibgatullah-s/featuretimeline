@@ -16,7 +16,8 @@ export interface IWorkItemDisplayDetails {
     isComplete: boolean;
     efforts: number;
     childrenWithNoEfforts: number;
-
+    //rwork: number;
+    //cwork: number;
     children: IWorkItemDisplayDetails[];
     
     predecessors: WorkItem[];
@@ -32,6 +33,8 @@ export interface IGridIteration {
 export interface IProgressIndicator {
     total: number;
     completed: number;
+    rwork: number;
+    cwork: number;
 }
 
 export interface IGridItem {

@@ -30,7 +30,8 @@ export const enum EpicTimelineActionTypes {
     ToggleIsNewPlanExperience = "EpicTimeline/IsNewPlanExperience",
     ToggleDeletePlanDialogHidden = "EpicTimeline/ToggleDeletePlanDialogHidden",
     HandleGeneralException = "EpicTimeline/HandleGeneralException",
-    DismissErrorMessageCard = "EpicTimeline/DismissErrorMessageCard"
+    DismissErrorMessageCard = "EpicTimeline/DismissErrorMessageCard",
+    OrderItem = "EpicTimeline/OrderItem"
 }
 
 export const EpicTimelineActions = {
@@ -43,8 +44,15 @@ export const EpicTimelineActions = {
         });
     },
     shiftItem: (itemId: number, startDate: moment.Moment) => {
+        console.log("shiftItem 1")
         PortfolioTelemetry.getInstance().TrackAction(EpicTimelineActionTypes.ShiftItem);
         return createAction(EpicTimelineActionTypes.ShiftItem, { itemId, startDate });
+    },
+    orderItem: (itemId: number, custom_order: number) => {
+        console.log("orderItem Id:", itemId, "Order", custom_order);
+        console.log("onOrderEpic 1")
+        PortfolioTelemetry.getInstance().TrackAction(EpicTimelineActionTypes.OrderItem);
+        return createAction(EpicTimelineActionTypes.OrderItem, { itemId, custom_order });
     },
     updateItemFinished: (itemId: number) => {
         return createAction(EpicTimelineActionTypes.UpdateItemFinished, { itemId });

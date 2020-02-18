@@ -16,11 +16,12 @@ import { PortfolioPlanningDataService } from "../../Common/Services/PortfolioPla
 import { PlanDirectoryActionTypes, PlanDirectoryActions } from "../Actions/PlanDirectoryActions";
 import { LoadPortfolio } from "./LoadPortfolio";
 import { ActionsOfType } from "../Helpers";
-import { SetDefaultDatesForWorkItems, saveDatesToServer } from "./DefaultDateUtil";
+import { SetDefaultDatesForWorkItems, saveDatesToServer, saveOrdersToServer } from "./DefaultDateUtil";
 
 export function* epicTimelineSaga(): SagaIterator {
     yield takeEvery(EpicTimelineActionTypes.UpdateDates, onUpdateDates);
     yield takeEvery(EpicTimelineActionTypes.ShiftItem, onShiftEpic);
+    yield takeEvery(EpicTimelineActionTypes.OrderItem, onOrderEpic)
     yield takeEvery(EpicTimelineActionTypes.AddItems, onAddEpics);
     yield takeEvery(PlanDirectoryActionTypes.ToggleSelectedPlanId, onToggleSelectedPlanId);
     yield takeEvery(EpicTimelineActionTypes.RemoveItems, onRemoveEpic);
@@ -40,7 +41,25 @@ function* onUpdateDates(
     }
 }
 
+function* onOrderEpic(action: ActionsOfType<EpicTimelineActions, EpicTimelineActionTypes.OrderItem>): SagaIterator {
+    
+    console.log("onOrderEpic 2");
+    const epicId = action.payload.itemId;
+    const order = action.payload.custom_order;
+    
+    try {
+        console.log("onOrderEpic - Id:", epicId, "Order:", order);
+        yield effects.call(saveOrdersToServer, epicId, order);
+    } catch (exception) {
+        console.error(exception);
+        yield effects.put(EpicTimelineActions.handleGeneralException(exception));
+    } finally {
+        yield effects.put(EpicTimelineActions.updateItemFinished(epicId));
+    }
+}
+
 function* onShiftEpic(action: ActionsOfType<EpicTimelineActions, EpicTimelineActionTypes.ShiftItem>): SagaIterator {
+    console.log("shiftItem 3");
     const epicId = action.payload.itemId;
     try {
         yield effects.call(saveDatesToServer, epicId);
@@ -136,7 +155,7 @@ function* onAddEpics(action: ActionsOfType<EpicTimelineActions, EpicTimelineActi
                 }
             ]
         };
-
+        console.log("projectid", projectId);
         const queryResult: PortfolioPlanningFullContentQueryResult = yield effects.call(
             [portfolioService, portfolioService.loadPortfolioContent],
             portfolioQueryInput

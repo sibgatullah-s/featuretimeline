@@ -8,21 +8,44 @@
 .progress-indicator-tooltip {
     flex: 1 1 auto;
 }
-
+// bar for progress (user story)
 .progress-details-parts {
-    width: 70px;
+    width: 35px;
     display: flex;
     height: 10px;
-    background: lightgrey;
+    background: lightgrey; // green?
+}
+
+.progressrwork-details-parts {
+    width: 35px;
+    display: flex;
+    height: 10px;
+    background: darkorchid; // green?
+}
+
+.progresscwork-details-parts {
+    width: 35px;
+    display: flex;
+    height: 10px;
+    background: blue; // green?
 }
 
 .progress-completed {
-    background: limegreen;
+    background: limegreen; // limegreen
+}
+
+.progressrwork-completed {
+    background: red;
+}
+
+.progresscwork-completed {
+    background: blue;
 }
 
 .progress-text {
     overflow: hidden;
     white-space: nowrap;
     margin-left: 5px;
+    margin-right: 5px;
     flex-shrink: 10;
 }

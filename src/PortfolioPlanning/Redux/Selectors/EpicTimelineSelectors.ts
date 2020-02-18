@@ -54,6 +54,10 @@ export function getEpicIds(state: IEpicTimelineState): { [epicId: number]: numbe
 }
 
 export function getTimelineItems(state: IEpicTimelineState): ITimelineItem[] {
+    
+    // var count = 0;
+    console.log('getTimelineItems')
+
     return state.epics.map(epic => {
         let completed: number;
         let total: number;
@@ -69,6 +73,12 @@ export function getTimelineItems(state: IEpicTimelineState): ITimelineItem[] {
             progress = epic.effortProgress;
         }
 
+        // console.log('count:', count++)
+
+        // console.log('epic.title: ' + epic.title + '. epic.order - ', epic.custom_order)
+        // console.log('count - ', count)
+        console.log('epic remaining work:', epic.remaining_work);
+            
         return {
             id: epic.id,
             group: epic.project,
@@ -85,9 +95,12 @@ export function getTimelineItems(state: IEpicTimelineState): ITimelineItem[] {
                 progress: progress
             },
             canMove: !epic.itemUpdating,
-            canResize: !epic.itemUpdating
+            canResize: !epic.itemUpdating,
+            custom_order: epic.custom_order ? epic.custom_order : 0, // custom_order is not receiving updated order (workitem order cannot be changed? read-only?)
+            remaining_work: epic.remaining_work ? epic.remaining_work : 0,
+            completed_work: epic.completed_work ? epic.completed_work : 0
         };
-    });
+    }).sort((a, b) => a.custom_order - b.custom_order);
 }
 
 export function getSelectedItem(state: IEpicTimelineState): ITimelineItem {

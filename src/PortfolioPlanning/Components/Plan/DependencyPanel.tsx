@@ -51,6 +51,8 @@ interface IDependencyItemRenderData {
     workItemType: string;
     completed: number;
     total: number;
+    rwork: number;
+    cwork: number;
     showInfoIcon: boolean;
     infoMessage: string;
 }
@@ -286,6 +288,8 @@ export class DependencyPanel extends React.Component<IDependencyPanelProps, IDep
                         this.props.progressTrackingCriteria === ProgressTrackingCriteria.CompletedCount
                             ? dependency.TotalCount
                             : dependency.TotalEffort,
+                    rwork: dependency.Remaining_Work,
+                    cwork: dependency.Remaining_Work,
                     showInfoIcon: this._showInfoIcon(dependency, isPredecessor),
                     infoMessage: isPredecessor
                         ? "Target date is later than " + this.props.workItem.title + "'s start date"
@@ -373,6 +377,8 @@ export class DependencyPanel extends React.Component<IDependencyPanelProps, IDep
                             <ProgressDetails
                                 completed={item.data.completed}
                                 total={item.data.total}
+                                rwork={item.data.rwork}
+                                cwork={item.data.cwork}
                                 onClick={() => {}}
                             />
                         </div>

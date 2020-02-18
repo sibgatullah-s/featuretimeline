@@ -61,9 +61,32 @@ export class PortfolioPlanningDataService {
     public async runPortfolioItemsQuery(
         queryInput: PortfolioPlanningQueryInput
     ): Promise<PortfolioPlanningQueryResult> {
+        console.log("type", typeof queryInput, "queryInput", queryInput);
         const workItemsQuery = ODataQueryBuilder.WorkItemsQueryString(queryInput);
+        // queryInput1 = queryInput;
+        // queryInput1[0].DescendantsWorkItemTypeFilter = 'Task';
+        // queryInput1[1].DescendantsWorkItemTypeFilter = 'Task';
+        // queryInput1[2].DescendantsWorkItemTypeFilter = 'Task';
+
+
+
+        workItemsQuery.queryString = workItemsQuery.queryString.replace('=WorkItemId', '=WorkItemId,Custom_Order,RemainingWork');
+        workItemsQuery.queryString = workItemsQuery.queryString.replace('Descendants', 'Children,Descendants');
+        //workItemsQuery.queryString = workItemsQuery.queryString.replace('/aggregate($count as TotalCount,iif(StateCategory eq \'Completed\',1,0) with sum as CompletedCount,iif(WorkItemType eq \'issue\', Effort,  0) with sum as total1, iif(    StateCategory eq \'Completed\' and WorkItemType eq \'issue\', Effort,  0) with sum as completed1, iif(WorkItemType eq \'user story\', StoryPoints,  0) with sum as total2, iif(    StateCategory eq \'Completed\' and WorkItemType eq \'user story\', StoryPoints,  0) with sum as completed2))', ')');
+        //workItemsQuery.queryString = workItemsQuery.queryString.replace('and (WorkItemId eq 15))', 'and (WorkItemId eq 15))&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=Title,RemainingWork,CompletedWork)');
+        console.log('workItemsQuery: ', workItemsQuery.queryString);
+
         const client = await ODataClient.getInstance();
-        const fullQueryUrl = client.generateProjectLink(undefined, workItemsQuery.queryString);
+        const fullQueryUrl = client.generateProjectLink(undefined, workItemsQuery.queryString); 
+        var fullQueryUrl1 =  fullQueryUrl.replace('and (WorkItemId eq 15))', 'and (WorkItemId eq 15))&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=Title,RemainingWork,CompletedWork)');
+        fullQueryUrl1 = fullQueryUrl1.substring(0, fullQueryUrl1.indexOf('CompletedWork)') + 14);
+        //fullQueryUrl1 = fullQueryUrl.replace('and (WorkItemId eq 15))', 'and (WorkItemId eq 15))&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=Title,RemainingWork,CompletedWork)');     
+        console.log('fullQueryUrl: ', fullQueryUrl);
+        console.log('fullQueryUrl1', fullQueryUrl1);
+        const responseString1 = client.runPostQuery(fullQueryUrl1);
+
+        //console.log('responseString1', responseString1);
+
 
         return client
             .runPostQuery(fullQueryUrl)
@@ -71,6 +94,7 @@ export class PortfolioPlanningDataService {
                 (results: any) =>
                     this.ParseODataPortfolioPlanningQueryResultResponseAsBatch(
                         results,
+                        responseString1,
                         workItemsQuery.aggregationClauses
                     ),
                 error => this.ParseODataErrorResponse(error)
@@ -300,7 +324,7 @@ export class PortfolioPlanningDataService {
         }
 
         const teamAreasQueryResult = await this.runTeamsInAreasQuery(teamsInAreaQueryInput);
-
+        console.log("queryinput1", portfolioQueryInput);
         return {
             items: portfolioQueryResult,
             projects: projectQueryResult,
@@ -336,6 +360,8 @@ export class PortfolioPlanningDataService {
 
         const client = await ODataClient.getInstance();
         const fullQueryUrl = client.generateProjectLink(undefined, odataQueryString);
+
+        console.log("fullurl", fullQueryUrl);
 
         return client
             .runPostQuery(fullQueryUrl)
@@ -838,6 +864,7 @@ export class PortfolioPlanningDataService {
         }
 
         const responseString: string = results;
+        console.log('repstr', responseString);
 
         try {
             //  TODO hack hack ... Look for start of JSON response "{"@odata.context""
@@ -975,14 +1002,63 @@ export class PortfolioPlanningDataService {
 
     private ParseODataPortfolioPlanningQueryResultResponseAsBatch(
         results: any,
+        results2: any,
         aggregationClauses: WorkItemTypeAggregationClauses
     ): PortfolioPlanningQueryResult {
         try {
             const rawResponseValue = this.ParseODataBatchResponse(results);
+            console.log('testing2', results2);
+
+            var responseString1: string = JSON.stringify(results2);
+            console.log("testing2", responseString1, responseString1.length);
+
+            console.log("testing2", responseString1.indexOf('{\\"@odata.context"'));
+            responseString1 = responseString1.substring(responseString1.indexOf('{\\"@odata.context"'), responseString1.length);
+            console.log("testing2", responseString1, responseString1.length);
+
+            responseString1 = responseString1.substring(0, responseString1.indexOf("\\r\\n--batchresponse")+1);
+            console.log("testing2", responseString1, responseString1.length);
+            
+            responseString1 = responseString1.split('\\').join('');
+            console.log("testing2", responseString1, responseString1.length);
+
+            responseString1 = responseString1.substring(responseString1.indexOf('{"@odata.context"'), responseString1.length);
+            console.log("testing2", responseString1, responseString1.length);
+        
+            // const start = responseString1.indexOf('{"@odata.context"');
+            // const end = responseString1.indexOf("\\r");
+
+            var jsonObject = JSON.parse(responseString1);
+            console.log('jsonobj1', jsonObject);
+
+            // jsonObject.value.forEach(element => {
+            //     var c = 0;
+            //     console.log("elem", element);
+            //     element.Descendants.forEach(e => {
+            //         console.log("delem", e, e.RemainingWork);
+            //         try {
+            //             c += e.RemainingWork;
+            //         } finally {
+
+            //         }
+            //     });
+            //     console.log("ID:", element.WorkItemId, "Remaining Hours:", c);
+            // });
+
+            // console.log("jsontest", jsonObject.value.find(el => el.WorkItemId === 8).Descendants.forEach(e => {
+            //     console.log("el r", e, e.RemainingWork);
+            // }));
+            
+
+            //var jsonObject = JSON.parse(JSON.stringify(responseString1));
+            //console.log('jsonObj', jsonObject);
+            //console.log('jsonObjRes', jsonObject.Results);
+            //console.log('jsontest', jsonObject.Descendants.RemainingWork);
 
             if (
-                !rawResponseValue ||
-                (rawResponseValue.exceptionMessage && rawResponseValue.exceptionMessage.length > 0)
+                !rawResponseValue || !jsonObject ||
+                (rawResponseValue.exceptionMessage && rawResponseValue.exceptionMessage.length > 0) //||
+                //(rawResponseValue1.exceptionMessage && rawResponseValue1.exceptionMessage.length > 0)
             ) {
                 const errorMessage =
                     rawResponseValue!.exceptionMessage || "No response payload found in OData batch query";
@@ -995,7 +1071,7 @@ export class PortfolioPlanningDataService {
 
             return {
                 exceptionMessage: null,
-                items: this.PortfolioPlanningQueryResultItems(rawResponseValue.responseValue, aggregationClauses)
+                items: this.PortfolioPlanningQueryResultItems(rawResponseValue.responseValue, jsonObject, aggregationClauses)//jsonObject.responseValue, aggregationClauses)
             };
         } catch (error) {
             console.log(error);
@@ -1010,16 +1086,43 @@ export class PortfolioPlanningDataService {
 
     private PortfolioPlanningQueryResultItems(
         jsonValuePayload: any,
+        jsonObject: any,
         aggregationClauses: WorkItemTypeAggregationClauses
     ): PortfolioPlanningQueryResultItem[] {
         if (!jsonValuePayload || !jsonValuePayload["value"]) {
             return null;
         }
+        
+        console.log('PortfolioPlanningQueryResultItems')
+
+        // iterate json object / find element with same index as current
+        
 
         return jsonValuePayload.value.map(jsonArrayItem => {
+            
+            console.log('jsonArrayItem: ', jsonArrayItem);
+            
+            
             const rawItem: ODataWorkItemQueryResult = jsonArrayItem;
-            const areaIdValue: string = rawItem.AreaSK ? rawItem.AreaSK.toLowerCase() : null;
+            let rwork = 0;
+            let cwork = 0;
 
+            jsonObject.value.find(el => el.WorkItemId === jsonArrayItem.WorkItemId).Descendants.forEach(element => {
+                try {
+                    if (!isNaN(element.RemainingWork)) {
+                        rwork += element.RemainingWork;
+                    }  
+                    
+                    if (!isNaN(element.CompletedWork)) {
+                        cwork += element.CompletedWork;
+                    } 
+                } finally {
+
+                }
+            });
+
+            console.log('id:', rawItem.WorkItemId, 'title:', rawItem.Title, 'remaining work:', rwork, 'completed work', cwork);
+            const areaIdValue: string = rawItem.AreaSK ? rawItem.AreaSK.toLowerCase() : null;
             const result: PortfolioPlanningQueryResultItem = {
                 WorkItemId: rawItem.WorkItemId,
                 WorkItemType: rawItem.WorkItemType,
@@ -1035,8 +1138,14 @@ export class PortfolioPlanningDataService {
                 CompletedEffort: 0,
                 TotalEffort: 0,
                 EffortProgress: 0.0,
-                CountProgress: 0.0
+                CountProgress: 0.0,
+                Custom_Order: rawItem.Custom_order,
+                Remaining_Work: rwork,
+                Completed_Work: cwork
             };
+
+            console.log('result:, ', result);
+
 
             const descendantsJsonObject = jsonArrayItem[ODataConstants.Descendants];
             if (descendantsJsonObject && descendantsJsonObject.length === 1) {
@@ -1184,6 +1293,8 @@ export class PortfolioPlanningDataService {
         resultItem.TotalEffort = totalEffort;
         resultItem.CompletedEffort = completedEffort;
         resultItem.EffortProgress = effortProgress;
+
+        
     }
 
     private PortfolioPlanningAreaQueryResultItems(rawItems: ODataAreaQueryResult[]): TeamsInArea {

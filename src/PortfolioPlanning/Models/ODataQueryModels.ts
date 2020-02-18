@@ -7,6 +7,8 @@ export interface ODataWorkItemQueryResult {
     TargetDate: Date;
     ProjectSK: string;
     AreaSK: string;
+    Custom_order: number;
+    RemainingWork: number;
 }
 
 export interface ODataQueryProjectInput {

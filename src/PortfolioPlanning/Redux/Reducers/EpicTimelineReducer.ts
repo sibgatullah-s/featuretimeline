@@ -24,6 +24,7 @@ export function epicTimelineReducer(state: IEpicTimelineState, action: EpicTimel
                 break;
             }
             case EpicTimelineActionTypes.ShiftItem: {
+                console.log("shiftItem 2")
                 const { itemId, startDate } = action.payload;
 
                 const epicToUpdate = draft.epics.find(epic => epic.id === itemId);
@@ -34,6 +35,22 @@ export function epicTimelineReducer(state: IEpicTimelineState, action: EpicTimel
                 epicToUpdate.startDate.setHours(0, 0, 0, 0);
                 epicToUpdate.endDate = startDate.add(epicDuration, "milliseconds").toDate();
                 epicToUpdate.endDate.setHours(0, 0, 0, 0);
+                epicToUpdate.itemUpdating = true;
+                break;
+            }
+            case EpicTimelineActionTypes.OrderItem: {
+                console.log("orderItem 2")
+                const { itemId, custom_order } = action.payload;
+
+                const epicToUpdate = draft.epics.find(epic => epic.id === itemId);
+
+                //const epicDuration = epicToUpdate.endDate.getTime() - epicToUpdate.startDate.getTime();
+
+                //epicToUpdate.startDate = startDate.toDate();
+                //epicToUpdate.startDate.setHours(0, 0, 0, 0);
+               // epicToUpdate.endDate = startDate.add(epicDuration, "milliseconds").toDate();
+                //epicToUpdate.endDate.setHours(0, 0, 0, 0);
+                epicToUpdate.custom_order = custom_order;
                 epicToUpdate.itemUpdating = true;
                 break;
             }
@@ -198,7 +215,10 @@ function handlePortfolioItemsReceived(
                     totalEffort: item.TotalEffort,
                     effortProgress: item.EffortProgress,
                     countProgress: item.CountProgress,
-                    itemUpdating: false
+                    itemUpdating: false,
+                    custom_order: item.Custom_Order,
+                    remaining_work: item.Remaining_Work,
+                    completed_work: item.Completed_Work
                 };
             });
 
@@ -269,7 +289,10 @@ function handlePortfolioItemsReceived(
                         totalEffort: newItemInfo.TotalEffort,
                         effortProgress: newItemInfo.EffortProgress,
                         countProgress: newItemInfo.CountProgress,
-                        itemUpdating: false
+                        itemUpdating: false,
+                        custom_order: newItemInfo.Custom_Order,
+                        remaining_work: newItemInfo.Remaining_Work,
+                        completed_work: newItemInfo.Completed_Work
                     });
                 }
             });
@@ -296,7 +319,7 @@ function handlePortfolioItemsReceived(
             draft.planLoadingStatus = LoadingStatus.Loaded;
         }
 
-        //  Sort timeline items by name.
+        //  Sort timeline items by name. Commented! (3)
         if (draft.epics) {
             draft.epics.sort(defaultIWorkItemComparer);
         }
