@@ -72,6 +72,10 @@ export interface IWorkItem {
     countProgress: number;
 
     itemUpdating: boolean;
+
+    //custom_order: number;
+    remaining_work: number;
+    completed_work: number;
 }
 
 export interface IAddItems {
@@ -110,6 +114,9 @@ export interface ITimelineItem {
     start_time: moment.Moment;
     end_time: moment.Moment;
     canMove: boolean;
+    //custom_order: number;
+    remaining_work: number;
+    completed_work: number;
 }
 
 export enum ProgressTrackingCriteria {

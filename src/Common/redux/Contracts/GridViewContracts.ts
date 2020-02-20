@@ -33,8 +33,8 @@ export interface IGridIteration {
 export interface IProgressIndicator {
     total: number;
     completed: number;
-    rwork: number;
-    cwork: number;
+    // rwork: number;
+    // cwork: number;
 }
 
 export interface IGridItem {

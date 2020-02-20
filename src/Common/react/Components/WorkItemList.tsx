@@ -14,7 +14,6 @@ export interface IWorkItemListItem {
     title: string;
     color: string;
     inProgressState: string;
-    order: number;
 }
 
 export interface IWorkItemListProps {

@@ -26,6 +26,7 @@ import { MenuButton } from "azure-devops-ui/Menu";
 import { IconSize } from "azure-devops-ui/Icon";
 import { DetailsDialog } from "./DetailsDialog";
 import { ConnectedDependencyPanel } from "./DependencyPanel";
+//import { GroupScopeType } from "VSS/Identities/Contracts";
 
 const day = 60 * 60 * 24 * 1000;
 const week = day * 7;
@@ -224,7 +225,7 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
             if (!this.defaultTimeStart || !this.defaultTimeEnd) {
                 [this.defaultTimeStart, this.defaultTimeEnd] = this._getDefaultTimes(this.props.items);
             }
-
+            //console.log("Groups:", this.props.groups);
             return (
                 <div className="plan-timeline-container">
               
@@ -357,6 +358,7 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
     }
 
     private _renderItem = (item, itemContext, getItemProps) => {
+        console.log('renderitem', item);
         let borderStyle = {};
         if (itemContext.selected) {
             borderStyle = {
@@ -397,6 +399,8 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
                         <ProgressDetails
                             completed={item.itemProps.completed}
                             total={item.itemProps.total}
+                            rwork={item.remaining_work}
+                            cwork={item.completed_work}
                             onClick={() => {}}
                         />
                     </div>
@@ -450,23 +454,23 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
                                                 planId: this.props.planId
                                             })
                                     },
-                                    {
-                                        id: "moveup",
-                                        text: "Move Up",
-                                        iconProps: {
-                                            iconName: ""
-                                        },
-                                        onActivate: () => this.moveUp(item)
-                                    },
-                                    {
-                                        id: "movedown",
-                                        text: "Move Down",
-                                        iconProps: {
-                                            iconName: ""
-                                        },
-                                        onActivate: () => this.moveDown(item)
-                                    }
-                                ]
+                                    // {
+                                    //     id: "moveup",
+                                    //     text: "Move Up",
+                                    //     iconProps: {
+                                    //         iconName: ""
+                                    //     },
+                                    //     onActivate: () => this.moveUp(item)
+                                    // },
+                                    // {
+                                    //     id: "movedown",
+                                    //     text: "Move Down",
+                                    //     iconProps: {
+                                    //         iconName: ""
+                                    //     },
+                                    //     onActivate: () => this.moveDown(item)
+                                    // }
+                                ],
                             }
                         }}
                     />
@@ -521,9 +525,9 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
 
     private _onItemMove = (itemId: number, time: number): void => {
         this.props.onShiftItem(itemId, moment(time));
-        const item = this.props.items.find(item => item.id === itemId);
-        console.log("Item Id: "  + itemId + ". Order: " + item.custom_order);
-        this.props.items.sort((a, b) => a.custom_order - b.custom_order)
+        //const item = this.props.items.find(item => item.id === itemId);
+        //console.log("Item Id: "  + itemId + ". Order: " + item.custom_order);
+        //this.props.items.sort((a, b) => a.custom_order - b.custom_order)
     };
 
     private _getDefaultTimes(items: ITimelineItem[]): [moment.Moment, moment.Moment] {
@@ -559,29 +563,44 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
     }
 
     // swap item order with element above
-    private moveUp(item1: ITimelineItem) {
-        var item2 = this.props.items.find(item => item.custom_order === item1.custom_order - 1);
-        item2.custom_order += 1;
+    // private moveUp(item1: ITimelineItem) {
+    //     // var item2 = this.props.items.find(item => item.custom_order === item1.custom_order - 1);
+    //     // item2.custom_order += 1;
 
-        item1.custom_order -= 1;
+    //     // item1.custom_order -= 1;
 
-        console.log("Title1:", item1.title, "Order1:", item1.custom_order);
-        console.log("Title2:", item2.title, "Order2:", item2.custom_order);
+    //     // console.log("Title1:", item1.title, "Order1:", item1.custom_order);
+    //     // console.log("Title2:", item2.title, "Order2:", item2.custom_order);
 
-        console.log("Item1:", item1);
-        console.log("Item2:", item2);
+    //     // console.log("Item1:", item1);
+    //     // console.log("Item2:", item2);
 
-        this.props.onOrderItem(item1.id, item1.custom_order);
-        this.props.onOrderItem(item2.id, item2.custom_order);
+    //     // this.props.onOrderItem(item1.id, item1.custom_order);
+    //     // this.props.onOrderItem(item2.id, item2.custom_order);
 
-    }
+    // }
 
     // swap item order with element below
-    private moveDown(item1: ITimelineItem) {
-        this.props.items.find(item => item.custom_order === item1.custom_order + 1).custom_order -= 1;
+    // private moveDown(item1: ITimelineItem) {
+    //     // var item2 = this.props.items.find(item => item.custom_order === item1.custom_order + 1);
+    //     // item2.custom_order -= 1;
 
-        item1.custom_order += 1;
-    }
+    //     // item1.custom_order += 1;
+
+    //     // console.log("Title1:", item1.title, "Order1:", item1.custom_order);
+    //     // console.log("Title2:", item2.title, "Order2:", item2.custom_order);
+
+    //     // console.log("Item1:", item1);
+    //     // console.log("Item2:", item2);
+
+    //     // this.props.onOrderItem(item1.id, item1.custom_order);
+    //     // this.props.onOrderItem(item2.id, item2.custom_order);
+
+
+    //     // this.props.items.find(item => item.custom_order === item1.custom_order + 1).custom_order -= 1;
+
+    //     // item1.custom_order += 1;
+    // }
 
     private navigateToEpicRoadmap(item: ITimelineItem) {
         const collectionUri = VSS.getWebContext().collection.uri;
@@ -628,7 +647,7 @@ function mapStateToProps(state: IPortfolioPlanningState): IPlanTimelineMappedPro
 const Actions = {
     onUpdateDates: EpicTimelineActions.updateDates,
     onShiftItem: EpicTimelineActions.shiftItem,
-    onOrderItem: EpicTimelineActions.orderItem,
+    //onOrderItem: EpicTimelineActions.orderItem,
     onToggleSetDatesDialogHidden: EpicTimelineActions.toggleItemDetailsDialogHidden,
     onSetSelectedItemId: EpicTimelineActions.setSelectedItemId,
     onZeroDataCtaClicked: EpicTimelineActions.openAddItemPanel,

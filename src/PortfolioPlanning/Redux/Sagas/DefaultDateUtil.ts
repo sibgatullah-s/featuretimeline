@@ -67,42 +67,42 @@ export function* saveDatesToServer(workItemId: number, defaultStartDate?: Date, 
     // TODO: Error experience
 }
 
-export function* saveOrdersToServer(workItemId: number, custom_order?: number): SagaIterator {
-    console.log("saveOrderServer");
+//export function* saveOrdersToServer(workItemId: number, custom_order?: number): SagaIterator {
+//     console.log("saveOrderServer");
 
-    const workItem: IWorkItem = yield effects.select(getWorkItemById, workItemId);
+//     const workItem: IWorkItem = yield effects.select(getWorkItemById, workItemId);
 
-    let order: number = 0;
+//     let order: number = 0;
 
-    if (custom_order) {
-        order = custom_order;
-        //workItem.custom_order = custom_order; // custom_order is read-only?
-        console.log("workItem.id:", workItem.id, "custom_order:", workItem.custom_order);
-        console.log("workItemId", workItem.id, "custom_order", custom_order);
-    } else if (workItem && workItem.custom_order) {
-        order = workItem.custom_order;
-        console.log("workItem.custom_order:", workItem.custom_order);
-    } 
-    console.log("Id:", workItemId, "Order:", order);
-    // if (order == 7){
-    //     order = 8;
-    // } else if (order == 8) {
-    //     order = 7;
-    // } 
+//     if (custom_order) {
+//         order = custom_order;
+//         //workItem.custom_order = custom_order; // custom_order is read-only?
+//         console.log("workItem.id:", workItem.id, "custom_order:", workItem.custom_order);
+//         console.log("workItemId", workItem.id, "custom_order", custom_order);
+//     } else if (workItem && workItem.custom_order) {
+//         order = workItem.custom_order;
+//         console.log("workItem.custom_order:", workItem.custom_order);
+//     } 
+//     console.log("Id:", workItemId, "Order:", order);
+//     // if (order == 7){
+//     //     order = 8;
+//     // } else if (order == 8) {
+//     //     order = 7;
+//     // } 
 
         
-    const doc: JsonPatchDocument = [
-        {
-            op: "add",
-            path: "/fields/Custom.order",
-            value: order
-        }
-    ];
+//     const doc: JsonPatchDocument = [
+//         {
+//             op: "add",
+//             path: "/fields/Custom.order",
+//             value: order
+//         }
+//     ];
 
-    const witHttpClient: WorkItemTrackingHttpClient = yield effects.call(
-        [VSS_Service, VSS_Service.getClient],
-        WorkItemTrackingHttpClient
-    ); 
+//     const witHttpClient: WorkItemTrackingHttpClient = yield effects.call(
+//         [VSS_Service, VSS_Service.getClient],
+//         WorkItemTrackingHttpClient
+//     ); 
 
-    yield effects.call([witHttpClient, witHttpClient.updateWorkItem], doc, workItemId);
-}
+//     yield effects.call([witHttpClient, witHttpClient.updateWorkItem], doc, workItemId);
+// }

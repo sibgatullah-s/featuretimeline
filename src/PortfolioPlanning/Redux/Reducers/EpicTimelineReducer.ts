@@ -38,22 +38,22 @@ export function epicTimelineReducer(state: IEpicTimelineState, action: EpicTimel
                 epicToUpdate.itemUpdating = true;
                 break;
             }
-            case EpicTimelineActionTypes.OrderItem: {
-                console.log("orderItem 2")
-                const { itemId, custom_order } = action.payload;
+            // case EpicTimelineActionTypes.OrderItem: {
+            //     console.log("orderItem 2")
+            //     const { itemId, custom_order } = action.payload;
 
-                const epicToUpdate = draft.epics.find(epic => epic.id === itemId);
+            //     const epicToUpdate = draft.epics.find(epic => epic.id === itemId);
 
-                //const epicDuration = epicToUpdate.endDate.getTime() - epicToUpdate.startDate.getTime();
+            //     //const epicDuration = epicToUpdate.endDate.getTime() - epicToUpdate.startDate.getTime();
 
-                //epicToUpdate.startDate = startDate.toDate();
-                //epicToUpdate.startDate.setHours(0, 0, 0, 0);
-               // epicToUpdate.endDate = startDate.add(epicDuration, "milliseconds").toDate();
-                //epicToUpdate.endDate.setHours(0, 0, 0, 0);
-                epicToUpdate.custom_order = custom_order;
-                epicToUpdate.itemUpdating = true;
-                break;
-            }
+            //     //epicToUpdate.startDate = startDate.toDate();
+            //     //epicToUpdate.startDate.setHours(0, 0, 0, 0);
+            //    // epicToUpdate.endDate = startDate.add(epicDuration, "milliseconds").toDate();
+            //     //epicToUpdate.endDate.setHours(0, 0, 0, 0);
+            //     epicToUpdate.custom_order = custom_order;
+            //     epicToUpdate.itemUpdating = true;
+            //     break;
+            // }
             case EpicTimelineActionTypes.UpdateItemFinished: {
                 const { itemId } = action.payload;
                 const epicToUpdate = draft.epics.find(epic => epic.id === itemId);
@@ -216,7 +216,7 @@ function handlePortfolioItemsReceived(
                     effortProgress: item.EffortProgress,
                     countProgress: item.CountProgress,
                     itemUpdating: false,
-                    custom_order: item.Custom_Order,
+                    //custom_order: item.Custom_Order,
                     remaining_work: item.Remaining_Work,
                     completed_work: item.Completed_Work
                 };
@@ -290,7 +290,7 @@ function handlePortfolioItemsReceived(
                         effortProgress: newItemInfo.EffortProgress,
                         countProgress: newItemInfo.CountProgress,
                         itemUpdating: false,
-                        custom_order: newItemInfo.Custom_Order,
+                        //custom_order: newItemInfo.Custom_Order,
                         remaining_work: newItemInfo.Remaining_Work,
                         completed_work: newItemInfo.Completed_Work
                     });

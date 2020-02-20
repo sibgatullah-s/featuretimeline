@@ -70,7 +70,7 @@ export class PortfolioPlanningDataService {
 
 
 
-        workItemsQuery.queryString = workItemsQuery.queryString.replace('=WorkItemId', '=WorkItemId,Custom_Order,RemainingWork');
+        //workItemsQuery.queryString = workItemsQuery.queryString.replace('=WorkItemId', '=WorkItemId,Custom_Order,RemainingWork');
         workItemsQuery.queryString = workItemsQuery.queryString.replace('Descendants', 'Children,Descendants');
         //workItemsQuery.queryString = workItemsQuery.queryString.replace('/aggregate($count as TotalCount,iif(StateCategory eq \'Completed\',1,0) with sum as CompletedCount,iif(WorkItemType eq \'issue\', Effort,  0) with sum as total1, iif(    StateCategory eq \'Completed\' and WorkItemType eq \'issue\', Effort,  0) with sum as completed1, iif(WorkItemType eq \'user story\', StoryPoints,  0) with sum as total2, iif(    StateCategory eq \'Completed\' and WorkItemType eq \'user story\', StoryPoints,  0) with sum as completed2))', ')');
         //workItemsQuery.queryString = workItemsQuery.queryString.replace('and (WorkItemId eq 15))', 'and (WorkItemId eq 15))&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=Title,RemainingWork,CompletedWork)');
@@ -78,7 +78,7 @@ export class PortfolioPlanningDataService {
 
         const client = await ODataClient.getInstance();
         const fullQueryUrl = client.generateProjectLink(undefined, workItemsQuery.queryString); 
-        var fullQueryUrl1 =  fullQueryUrl.replace('and (WorkItemId eq 15))', 'and (WorkItemId eq 15))&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=Title,RemainingWork,CompletedWork)');
+        var fullQueryUrl1 =  fullQueryUrl.replace('&$expand=Children,Descendants', '&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=RemainingWork,CompletedWork)');
         fullQueryUrl1 = fullQueryUrl1.substring(0, fullQueryUrl1.indexOf('CompletedWork)') + 14);
         //fullQueryUrl1 = fullQueryUrl.replace('and (WorkItemId eq 15))', 'and (WorkItemId eq 15))&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=Title,RemainingWork,CompletedWork)');     
         console.log('fullQueryUrl: ', fullQueryUrl);
@@ -1008,9 +1008,9 @@ export class PortfolioPlanningDataService {
         try {
             const rawResponseValue = this.ParseODataBatchResponse(results);
             console.log('testing2', results2);
-
+            //console.log("testing2", results2.responseValue);
             var responseString1: string = JSON.stringify(results2);
-            console.log("testing2", responseString1, responseString1.length);
+            console.log("testing22", responseString1, responseString1.length);
 
             console.log("testing2", responseString1.indexOf('{\\"@odata.context"'));
             responseString1 = responseString1.substring(responseString1.indexOf('{\\"@odata.context"'), responseString1.length);
@@ -1139,7 +1139,7 @@ export class PortfolioPlanningDataService {
                 TotalEffort: 0,
                 EffortProgress: 0.0,
                 CountProgress: 0.0,
-                Custom_Order: rawItem.Custom_order,
+                //Custom_Order: rawItem.Custom_order,
                 Remaining_Work: rwork,
                 Completed_Work: cwork
             };

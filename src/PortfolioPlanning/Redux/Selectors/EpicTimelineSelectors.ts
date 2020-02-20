@@ -96,11 +96,11 @@ export function getTimelineItems(state: IEpicTimelineState): ITimelineItem[] {
             },
             canMove: !epic.itemUpdating,
             canResize: !epic.itemUpdating,
-            custom_order: epic.custom_order ? epic.custom_order : 0, // custom_order is not receiving updated order (workitem order cannot be changed? read-only?)
+            //custom_order: epic.custom_order ? epic.custom_order : 0, // custom_order is not receiving updated order (workitem order cannot be changed? read-only?)
             remaining_work: epic.remaining_work ? epic.remaining_work : 0,
             completed_work: epic.completed_work ? epic.completed_work : 0
         };
-    }).sort((a, b) => a.custom_order - b.custom_order);
+    })//.sort((a, b) => a.custom_order - b.custom_order);
 }
 
 export function getSelectedItem(state: IEpicTimelineState): ITimelineItem {
