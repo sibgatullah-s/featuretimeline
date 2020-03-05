@@ -61,7 +61,6 @@ export class PortfolioPlanningDataService {
     public async runPortfolioItemsQuery(
         queryInput: PortfolioPlanningQueryInput
     ): Promise<PortfolioPlanningQueryResult> {
-        console.log("type", typeof queryInput, "queryInput", queryInput);
         const workItemsQuery = ODataQueryBuilder.WorkItemsQueryString(queryInput);
         // queryInput1 = queryInput;
         // queryInput1[0].DescendantsWorkItemTypeFilter = 'Task';
@@ -69,24 +68,41 @@ export class PortfolioPlanningDataService {
         // queryInput1[2].DescendantsWorkItemTypeFilter = 'Task';
 
 
-
+        console.log("query0.1", workItemsQuery.queryString);
         //workItemsQuery.queryString = workItemsQuery.queryString.replace('=WorkItemId', '=WorkItemId,Custom_Order,RemainingWork');
-        workItemsQuery.queryString = workItemsQuery.queryString.replace('Descendants', 'Children,Descendants');
+        //workItemsQuery.queryString = workItemsQuery.queryString.replace('Descendants', 'Children,Descendants');
         //workItemsQuery.queryString = workItemsQuery.queryString.replace('/aggregate($count as TotalCount,iif(StateCategory eq \'Completed\',1,0) with sum as CompletedCount,iif(WorkItemType eq \'issue\', Effort,  0) with sum as total1, iif(    StateCategory eq \'Completed\' and WorkItemType eq \'issue\', Effort,  0) with sum as completed1, iif(WorkItemType eq \'user story\', StoryPoints,  0) with sum as total2, iif(    StateCategory eq \'Completed\' and WorkItemType eq \'user story\', StoryPoints,  0) with sum as completed2))', ')');
         //workItemsQuery.queryString = workItemsQuery.queryString.replace('and (WorkItemId eq 15))', 'and (WorkItemId eq 15))&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=Title,RemainingWork,CompletedWork)');
-        console.log('workItemsQuery: ', workItemsQuery.queryString);
 
         const client = await ODataClient.getInstance();
         const fullQueryUrl = client.generateProjectLink(undefined, workItemsQuery.queryString); 
-        var fullQueryUrl1 =  fullQueryUrl.replace('&$expand=Children,Descendants', '&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=RemainingWork,CompletedWork)');
-        fullQueryUrl1 = fullQueryUrl1.substring(0, fullQueryUrl1.indexOf('CompletedWork)') + 14);
-        //fullQueryUrl1 = fullQueryUrl.replace('and (WorkItemId eq 15))', 'and (WorkItemId eq 15))&$expand=Children,Descendants($filter=WorkItemType eq \'Task\';$select=Title,RemainingWork,CompletedWork)');     
-        console.log('fullQueryUrl: ', fullQueryUrl);
-        console.log('fullQueryUrl1', fullQueryUrl1);
-        const responseString1 = client.runPostQuery(fullQueryUrl1);
+        console.log("fullqueryurl", fullQueryUrl);
 
-        //console.log('responseString1', responseString1);
+        // parse for project id !! make sure this works 
+        var temp = fullQueryUrl.substring(fullQueryUrl.indexOf("Project/ProjectId"), fullQueryUrl.indexOf(" and"));
+        console.log("temp", temp);
 
+
+        // !!attention, query issue
+        //var fullQueryUrl1 =  fullQueryUrl.replace("&$expand=Descendants", "&$expand=Descendants($filter=(" + temp + ") and (WorkItemType eq \'Task\' or WorkItemType eq \'Bug\' or WorkItemType eq \'Change Request\' or WorkItemType eq \'Problem\' or WorkItemType eq \'Support\' or WorkItemType eq \'Request\' or WorkItemType eq \'HR\');$select=RemainingWork,CompletedWork)");
+        var fullQueryUrl1 =  fullQueryUrl.replace("&$expand=Descendants", "&$expand=Descendants($filter=(WorkItemType eq \'Task\' or WorkItemType eq \'Bug\' or WorkItemType eq \'Change Request\' or WorkItemType eq \'Problem\' or WorkItemType eq \'Support\' or WorkItemType eq \'Request\' or WorkItemType eq \'HR\');$select=RemainingWork,CompletedWork)");
+        console.log("fullqueryurl1.1", fullQueryUrl1);
+
+        fullQueryUrl1 = fullQueryUrl1.substring(0, fullQueryUrl1.lastIndexOf('CompletedWork)') + 14);
+        console.log("fullqueryurl1.5", fullQueryUrl1);     
+        var responseString1 = client.runPostQuery(fullQueryUrl1);
+        console.log("fullquery1.6", responseString1);
+
+        // try {
+        //     var results2: any = responseString1;
+        //     console.log("fullquery1.61", results2, results2["responseText"].replace("\\", ""));
+        //     console.log("fullquery1.7", results2.responseText);
+        // } finally {
+        //     console.log("fullqueryfailed");
+        // }
+        
+        // var test = this.checkResponse(responseString1);
+        // console.log("fullquery1.7", test);
 
         return client
             .runPostQuery(fullQueryUrl)
@@ -100,6 +116,22 @@ export class PortfolioPlanningDataService {
                 error => this.ParseODataErrorResponse(error)
             );
     }
+
+    // public checkResponse(results2: any): string {
+    //     results2.responseText = results2.responseText.replace("\\", "");
+
+    //     console.log('fullquery1.71', results2, results2.responseText);
+            
+    //     var responseString1: string = results2.responseText;
+
+    //     console.log('fullquery1.72', responseString1);
+        
+    //     if (responseString1 === undefined) {
+    //         return "yikes";
+    //     } else {
+    //         return "okay";
+    //     }
+    // }
 
     public async runProjectQuery(
         queryInput: PortfolioPlanningProjectQueryInput
@@ -324,7 +356,6 @@ export class PortfolioPlanningDataService {
         }
 
         const teamAreasQueryResult = await this.runTeamsInAreasQuery(teamsInAreaQueryInput);
-        console.log("queryinput1", portfolioQueryInput);
         return {
             items: portfolioQueryResult,
             projects: projectQueryResult,
@@ -361,7 +392,6 @@ export class PortfolioPlanningDataService {
         const client = await ODataClient.getInstance();
         const fullQueryUrl = client.generateProjectLink(undefined, odataQueryString);
 
-        console.log("fullurl", fullQueryUrl);
 
         return client
             .runPostQuery(fullQueryUrl)
@@ -1006,24 +1036,30 @@ export class PortfolioPlanningDataService {
         aggregationClauses: WorkItemTypeAggregationClauses
     ): PortfolioPlanningQueryResult {
         try {
+            console.log("testing2.0", results2, results2.responseTest);
+        
             const rawResponseValue = this.ParseODataBatchResponse(results);
-            console.log('testing2', results2);
-            //console.log("testing2", results2.responseValue);
-            var responseString1: string = JSON.stringify(results2);
-            console.log("testing22", responseString1, responseString1.length);
+            results2.responseText = results2.responseText.replace("\\", "");
 
-            console.log("testing2", responseString1.indexOf('{\\"@odata.context"'));
-            responseString1 = responseString1.substring(responseString1.indexOf('{\\"@odata.context"'), responseString1.length);
-            console.log("testing2", responseString1, responseString1.length);
-
-            responseString1 = responseString1.substring(0, responseString1.indexOf("\\r\\n--batchresponse")+1);
-            console.log("testing2", responseString1, responseString1.length);
+            // if (results2.responseText === undefined) {
+            //     var i;
+            //     for (i = 0; i < 4; i++) {
+            //         results2.responseText = results2.responseText.replace("\\", "");
+            //     };
+            //     console.log("testing2.01");
+                
+            // }
             
-            responseString1 = responseString1.split('\\').join('');
-            console.log("testing2", responseString1, responseString1.length);
+            console.log('testing2.1', results2, results2.responseText);
+            
+            var responseString1: string = results2.responseText;
+            console.log("testing2.2", responseString1, "text", responseString1.length);
+
+            responseString1 = responseString1.substring(0, responseString1.indexOf("\n--batchresponse")+1);
+            console.log("testing2.3", responseString1, responseString1.length);
 
             responseString1 = responseString1.substring(responseString1.indexOf('{"@odata.context"'), responseString1.length);
-            console.log("testing2", responseString1, responseString1.length);
+            console.log("testing2.4", responseString1, responseString1.length);
         
             // const start = responseString1.indexOf('{"@odata.context"');
             // const end = responseString1.indexOf("\\r");
@@ -1121,7 +1157,7 @@ export class PortfolioPlanningDataService {
                 }
             });
 
-            console.log('id:', rawItem.WorkItemId, 'title:', rawItem.Title, 'remaining work:', rwork, 'completed work', cwork);
+            console.log('item record id:', rawItem.WorkItemId, 'title:', rawItem.Title, 'remaining work:', rwork, 'completed work', cwork);
             const areaIdValue: string = rawItem.AreaSK ? rawItem.AreaSK.toLowerCase() : null;
             const result: PortfolioPlanningQueryResultItem = {
                 WorkItemId: rawItem.WorkItemId,

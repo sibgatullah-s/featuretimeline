@@ -9,7 +9,8 @@ import {
     getTeamNames,
     getSelectedItem,
     getEpicIds,
-    getPlanExtendedTelemetry
+    getPlanExtendedTelemetry,
+    getTimelineItems
 } from "../../Redux/Selectors/EpicTimelineSelectors";
 import { getSelectedPlanMetadata } from "../../Redux/Selectors/PlanDirectorySelectors";
 import { connect } from "react-redux";
@@ -40,6 +41,7 @@ interface IPlanPageMappedProps {
     isNewPlanExperience: boolean;
     deletePlanDialogHidden: boolean;
     planTelemetry: ExtendedSinglePlanTelemetry;
+    items: ITimelineItem[];
 }
 
 export type IPlanPageProps = IPlanPageMappedProps & typeof Actions;
@@ -60,6 +62,10 @@ export default class PlanPage extends React.Component<IPlanPageProps, IPortfolio
                 {this._renderDeletePlanDialog()}
             </Page>
         );
+    }
+
+    public test() {
+        this.forceUpdate;
     }
 
     private _renderPlanHeader = (): JSX.Element => {
@@ -148,6 +154,8 @@ export default class PlanPage extends React.Component<IPlanPageProps, IPortfolio
                     onClosePlanSettingsPanel={() => {
                         this.props.onTogglePlanSettingsPanelOpen(false);
                     }}
+                    items={this.props.items}
+                    onColorChanged={this.props.onToggleProgressTrackingCriteria}
                 />
             );
         }
@@ -194,7 +202,8 @@ function mapStateToProps(state: IPortfolioPlanningState): IPlanPageMappedProps {
         planLoadingStatus: state.epicTimelineState.planLoadingStatus,
         isNewPlanExperience: state.epicTimelineState.isNewPlanExperience,
         deletePlanDialogHidden: state.epicTimelineState.deletePlanDialogHidden,
-        planTelemetry: getPlanExtendedTelemetry(state.epicTimelineState)
+        planTelemetry: getPlanExtendedTelemetry(state.epicTimelineState),
+        items: getTimelineItems(state.epicTimelineState)
     };
 }
 

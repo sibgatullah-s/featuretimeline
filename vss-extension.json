@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "workitem-feature-timeline-extension",
-    "version": "0.0.357.8",
+    "version": "0.0.358.5",
     "name": "Feature timeline and Epic Roadmap",
     "description": "Feature timeline of your in-progress features.",
     "publisher": "Sib",
@@ -67,7 +67,7 @@
             "description": "Portfolio planning.",
             "targets": ["ms.vss-work-web.work-hub-group"],
             "properties": {
-                "name": "Portfolio plans (Beta)",
+                "name": "Portfolio plans (GCcase)",
                 "uri": "dist/PortfolioPlanning.html",
                 "dynamic": true,
                 "icon": "dist/images/portfolio-plans-icon.png"

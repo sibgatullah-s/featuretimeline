@@ -9,36 +9,36 @@
     flex: 1 1 auto;
 }
 // bar for progress (user story)
-.progress-details-parts {
+.progress-details-parts { // nworkcol
     width: 35px;
     display: flex;
     height: 10px;
     background: lightgrey; // green?
 }
 
-.progressrwork-details-parts {
+.progressrwork-details-parts { // rnworkcol
     width: 35px;
     display: flex;
     height: 10px;
     background: darkorchid; // green?
 }
 
-.progresscwork-details-parts {
+.progresscwork-details-parts { // cnworkcol
     width: 35px;
     display: flex;
     height: 10px;
-    background: blue; // green?
+    background: lightskyblue; // green?
 }
 
-.progress-completed {
+.progress-completed { //workcol
     background: limegreen; // limegreen
 }
 
-.progressrwork-completed {
+.progressrwork-completed { // rworkcol
     background: red;
 }
 
-.progresscwork-completed {
+.progresscwork-completed { // cworkcol
     background: blue;
 }
 

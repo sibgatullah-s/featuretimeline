@@ -2,24 +2,58 @@
 @import "node_modules/azure-devops-ui/Core/core.scss";
 
 .settings-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    .settings-item {
-        margin-bottom: $spacing-16;
-    }
 
     .progress-options {
         display: flex;
         align-items: baseline;
     }
 
-    .progress-options-label {
-        @extend .body-m;
-    }
-
     .progress-options-dropdown {
         margin: 5px;
     }
+
+    .dropdown-content a {
+        float: left;
+        position: relative;
+        margin: 3px;
+        text-align: center;
+    }
+
+    .dropdown-content a .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 100%;
+        left: 50%;
+        margin-left: -60px;
+        
+        /* Fade in tooltip - takes 1 second to go from 0% to 100% opac: */
+        opacity: 0;
+        transition: opacity 1s;
+    }
+
+    .dropdown-content a .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    }
+
+    .dropdown-content a:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+
+ 
 }

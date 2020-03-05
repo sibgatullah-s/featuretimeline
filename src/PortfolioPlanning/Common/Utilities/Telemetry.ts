@@ -150,6 +150,7 @@ export class PortfolioTelemetry {
     }
 
     public TrackAction(actionName: string, properties?: { [key: string]: any }) {
+        console.log("TrackAction");
         try {
             AppInsightsClient.getAppInsightsInstance().trackEvent({
                 name: actionName,

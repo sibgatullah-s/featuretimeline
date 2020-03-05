@@ -26,12 +26,23 @@ import { MenuButton } from "azure-devops-ui/Menu";
 import { IconSize } from "azure-devops-ui/Icon";
 import { DetailsDialog } from "./DetailsDialog";
 import { ConnectedDependencyPanel } from "./DependencyPanel";
+//import { NotificationReasonType } from "Notifications/Contracts";
 //import { GroupScopeType } from "VSS/Identities/Contracts";
 
 const day = 60 * 60 * 24 * 1000;
 const week = day * 7;
 const sliderSteps = 50;
 const maxZoomIn = 20 * day;
+// const to store id of html elements related to color for color picker
+// const colorDict = {"workcol": "progress-completed", "rworkcol": "progressrwork-completed", "cworkcol": "progresscwork-completed", "nworkcol": "progress-details-parts", "rnworkcol": "progressrwork-details-parts", "cnworkcol": "progresscwork-details-parts"};
+var c1, c2, c3, c4, c5, c6;
+
+export {c1}; 
+export {c2}; 
+export {c3}; 
+export {c4}; 
+export {c5}; 
+export {c6};
 
 type Unit = `second` | `minute` | `hour` | `day` | `month` | `year`;
 
@@ -83,6 +94,7 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
         };
     }
 
+    // function to render top part of timeline with info and zoom settings
     public render(): JSX.Element {
         return (
             <>
@@ -141,7 +153,215 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
         }
     }
 
+    // color picker to change color of elements
+    // private _changeColor(): JSX.Element {
+    //     console.log("testingtesting33");
+    //     console.log("testingtesting", this.props);
+    //     console.log("testevent2");
+
+    //     //console.log("testlocalhost");
+    //     // check if cookies exist with color otherwise set to default colors, check if this gets rerun multiple times in one session
+
+    //     // document.cookie = 'workcol=limegreen';
+    //     // document.cookie = 'rworkcol=red';
+    //     // document.cookie = 'cworkcol=blue';
+    //     // document.cookie = 'nworkcol=lightgrey';
+    //     // document.cookie = 'rnworkcol=darkorchid';
+    //     // document.cookie = 'cnworkcol=lightskyblue';
+
+    //     if (document.cookie.search(new RegExp("\\b" + "workcol" + "\\b")) !== -1) {
+    //         console.log("check1", c1);
+    //         c1 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "workcol" + "\\b")) + 8, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "workcol" + "\\b"))));
+    //         console.log("check2", c1);
+    //     } else {
+    //         console.log("testevent1");
+    //         document.cookie = "workcol=#32CD32";
+    //         c1 = "#32CD32";
+    //     }
+    //     if (document.cookie.search(new RegExp("\\b" + "rworkcol" + "\\b")) !== -1) {
+    //         c2 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "rworkcol" + "\\b")) + 9, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "rworkcol" + "\\b"))));
+    //     } else {
+    //         console.log("testevent2");
+    //         document.cookie = "rworkcol=#FF0000";
+    //         c2 = "#FF0000"
+    //     }
+
+    //     if (document.cookie.search(new RegExp("\\b" + "cworkcol" + "\\b")) !== -1) {
+    //         c3 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "cworkcol" + "\\b")) + 9, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "cworkcol" + "\\b"))));
+    //     } else {
+    //         console.log("testevent3");
+    //         document.cookie = "cworkcol=#0000FF";
+    //         c3 = "#0000FF"
+    //     }
+
+    //     if (document.cookie.search(new RegExp("\\b" + "nworkcol" + "\\b")) !== -1) {
+    //         c4 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "nworkcol" + "\\b")) + 9, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "nworkcol" + "\\b"))));
+    //     } else {
+    //         console.log("testevent4");
+    //         document.cookie ="nworkcol=#D3D3D3";
+    //         c4 = "#D3D3D3"
+    //     }
+
+    //     if (document.cookie.search(new RegExp("\\b" + "rnworkcol" + "\\b")) !== -1) {
+    //         c5 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "rnworkcol" + "\\b")) + 10, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "rnworkcol" + "\\b"))));
+    //     } else {
+    //         console.log("testevent5");
+    //         document.cookie = "rnworkcol=#9932cc";
+    //         c5 = "#9932cc"
+    //     }
+
+    //     if (document.cookie.search(new RegExp("\\b" + "cnworkcol" + "\\b")) !== -1) {
+    //         console.log("test1010gothere");
+    //         c6 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "cnworkcol" + "\\b")) + 10, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "cnworkcol" + "\\b"))));
+    //     } else {
+    //         console.log("testevent6");
+    //         document.cookie = "cnworkcol=#87cefa";
+    //         c6 = "#87cefa"
+    //     }
+
+
+    //     console.log("cookie", document.cookie);
+    //     console.log("values", c1, c2, c3, c4, c5, c6);
+
+    //     // !! set values of color picker to values fro mcookie
+    //     return (
+    //         <div className="plan-timeline-change-color">
+    //         </div>
+    //     );
+    // }
+
+    // private onChange1 = event => {
+    //     document.cookie = "workcol=" + String($("#color-picker1").val());
+    //     var x = document.getElementsByClassName("progress-completed");
+    //     var i;
+    //     for (i = 0; i < x.length; i++) {
+    //         x[i]["style"].background = $("#color-picker1").val();
+    //     }
+    //     console.log("testeventchange1", c1);
+    //     c1 = $("#color-picker1").val();
+    //     console.log("testeventchange1", c1);
+    //     document.getElementById("color-picker1")["value"] = $("#color-picker1").val();
+    //     document.getElementById("color-picker1")["defaultValue"] = $("#color-picker1").val();
+    //     console.log("testeventchange1", document.cookie);
+    //     console.log("testeventchange1", document.getElementById("color-picker1")["value"], document.getElementById("color-picker1")["defaultValue"]);
+        
+    // };
+
+
+    // update cookie, update value of color picker?, update css value background
+    // private onColorChange = event => {
+    //     // update cookie to new color
+    //     console.log("testevent", $(event.target.id).val(), event.target); // event.target.(id(color picker), value(value of color))
+    //     document.cookie = event.target.parentElement.parentElement.id + "=" + String($("#" + event.target.id).val());
+    //     console.log("testevent", document.cookie);
+    //     //console.log("testevent", $("#" + event.target.id).val());
+    //     //console.log("testevent " + event.target.parentElement.parentElement.id + "=" + String($(event.target.id).val()));
+    //     //var elem = event.target.parentElement.parentElement.id;
+    //     // update all css values with new color
+    //     //var test = document.getElementsByClassName("progresscwork-details-parts");
+    //     // console.log("dict", colorDict[event.target.parentElement.parentElement.id]);
+    //     var x = document.getElementsByClassName(colorDict[event.target.parentElement.parentElement.id]);
+    //     var i;
+    //     for (i = 0; i < x.length; i++) {
+    //         console.log("testevent1", x[i]);
+    //         // if(($("#" + event.target.id).val() == "#0000ff") || ($("#" + event.target.id).val() == "#87cefa")){
+    //         //     console.log("testeventwhy");
+    //         // }
+    //         x[i]["style"].background = $("#" + event.target.id).val();
+    //     };
+
+    //     // console.log("testevent2.01", event.target);
+    //     // console.log("testevent2.1", document.getElementById(event.target.id)["value"] = $("#" + event.target.id).val(), document.getElementById(event.target.id)["defaultValue"] = $("#" + event.target.id).val());
+    //     // console.log("testeventpickervalue",  document.getElementById(event.target.id)["value"]);
+
+    //     // call function to re-render to update color-picker color
+    //     // !! warning, re-rendering by calling could also call shift on first item but not change time
+    //     try {
+    //         //console.log("testingtesting", this.props.onSetSelectedItemId(this.props.items[0].id));
+    //         console.log("testingtesting", this._onItemMove(this.props.items[0].id, Date.parse(this.props.items[0].start_time["_i"])));
+    //         // ! very ineffecient, will this always work?
+    //         // unhighlight first item which was highlighted previously
+            
+    //     } finally {
+
+    //     }
+        
+    // };
+
+
+
+
     private _renderZoomControls(): JSX.Element {
+        // inserting color-picker value code here ??? is this needed
+        console.log("testingtesting33");
+        console.log("testingtesting", this.props);
+        console.log("testevent2");
+
+        //console.log("testlocalhost");
+        // check if cookies exist with color otherwise set to default colors, check if this gets rerun multiple times in one session
+
+        // document.cookie = 'workcol=limegreen';
+        // document.cookie = 'rworkcol=red';
+        // document.cookie = 'cworkcol=blue';
+        // document.cookie = 'nworkcol=lightgrey';
+        // document.cookie = 'rnworkcol=darkorchid';
+        // document.cookie = 'cnworkcol=lightskyblue';
+
+        if (document.cookie.search(new RegExp("\\b" + "workcol" + "\\b")) !== -1) {
+            console.log("check1", c1);
+            c1 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "workcol" + "\\b")) + 8, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "workcol" + "\\b"))));
+            console.log("check2", c1);
+        } else {
+            console.log("testevent1");
+            document.cookie = "workcol=#32CD32";
+            c1 = "#32CD32";
+        }
+        if (document.cookie.search(new RegExp("\\b" + "rworkcol" + "\\b")) !== -1) {
+            c2 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "rworkcol" + "\\b")) + 9, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "rworkcol" + "\\b"))));
+        } else {
+            console.log("testevent2");
+            document.cookie = "rworkcol=#FF0000";
+            c2 = "#FF0000"
+        }
+
+        if (document.cookie.search(new RegExp("\\b" + "cworkcol" + "\\b")) !== -1) {
+            c3 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "cworkcol" + "\\b")) + 9, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "cworkcol" + "\\b"))));
+        } else {
+            console.log("testevent3");
+            document.cookie = "cworkcol=#0000FF";
+            c3 = "#0000FF"
+        }
+
+        if (document.cookie.search(new RegExp("\\b" + "nworkcol" + "\\b")) !== -1) {
+            c4 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "nworkcol" + "\\b")) + 9, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "nworkcol" + "\\b"))));
+        } else {
+            console.log("testevent4");
+            document.cookie ="nworkcol=#D3D3D3";
+            c4 = "#D3D3D3"
+        }
+
+        if (document.cookie.search(new RegExp("\\b" + "rnworkcol" + "\\b")) !== -1) {
+            c5 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "rnworkcol" + "\\b")) + 10, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "rnworkcol" + "\\b"))));
+        } else {
+            console.log("testevent5");
+            document.cookie = "rnworkcol=#9932cc";
+            c5 = "#9932cc"
+        }
+
+        if (document.cookie.search(new RegExp("\\b" + "cnworkcol" + "\\b")) !== -1) {
+            console.log("test1010gothere");
+            c6 = document.cookie.substring(document.cookie.search(new RegExp("\\b" + "cnworkcol" + "\\b")) + 10, document.cookie.indexOf(";", document.cookie.search(new RegExp("\\b" + "cnworkcol" + "\\b"))));
+        } else {
+            console.log("testevent6");
+            document.cookie = "cnworkcol=#87cefa";
+            c6 = "#87cefa"
+        }
+
+
+        console.log("cookie", document.cookie);
+        console.log("values", c1, c2, c3, c4, c5, c6);
+
+
         if (this.props.items.length > 0) {
             return (
                 <div className="plan-timeline-zoom-controls">
@@ -357,6 +577,7 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
         return <div className="plan-timeline-group">{group.title}</div>;
     }
 
+    // ! highlights item if selected
     private _renderItem = (item, itemContext, getItemProps) => {
         console.log('renderitem', item);
         let borderStyle = {};
@@ -454,14 +675,14 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
                                                 planId: this.props.planId
                                             })
                                     },
-                                    // {
-                                    //     id: "moveup",
-                                    //     text: "Move Up",
-                                    //     iconProps: {
-                                    //         iconName: ""
-                                    //     },
-                                    //     onActivate: () => this.moveUp(item)
-                                    // },
+                                    {
+                                        id: "test",
+                                        text: "Test",
+                                        iconProps: {
+                                            iconName: ""
+                                        },
+                                        onActivate: () => this.Test()
+                                    },
                                     // {
                                     //     id: "movedown",
                                     //     text: "Move Down",
@@ -524,6 +745,7 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
     };
 
     private _onItemMove = (itemId: number, time: number): void => {
+        console.log("onitemmove", time);
         this.props.onShiftItem(itemId, moment(time));
         //const item = this.props.items.find(item => item.id === itemId);
         //console.log("Item Id: "  + itemId + ". Order: " + item.custom_order);
@@ -562,6 +784,11 @@ export class PlanTimeline extends React.Component<IPlanTimelineProps, IPlanTimel
         return [startTime, endTime];
     }
 
+    // test, change color
+    private Test() {
+        document.cookie = 'cnworkcol=orange';
+        console.log("cookie1", document.cookie);
+    }
     // swap item order with element above
     // private moveUp(item1: ITimelineItem) {
     //     // var item2 = this.props.items.find(item => item.custom_order === item1.custom_order - 1);
